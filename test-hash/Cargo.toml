@@ -1,0 +1,27 @@
+[package]
+name = "test-hash"
+version = "0.1.0"
+authors = ["Johan Andersson <repi@repi.se>"]
+edition = "2018"
+
+[dependencies]
+blake2 = "*"
+blake2b_simd = "*"
+blake2s_simd = "*"
+blake3 = "*"
+#blake3 = { version = "*", features = ["rayon"] }
+byteorder = "*"
+digest = "*"
+md5 = "*"
+multibase = "*"
+multihash = "*"
+seahash = "*"
+sha2 = "*"
+sha3 = "*"
+t1ha = "*"
+twox-hash = "*"
+sthash = "*"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+ring = "*"
+meowhash = "*"

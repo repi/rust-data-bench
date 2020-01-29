@@ -1,0 +1,24 @@
+[package]
+name = "test-compress"
+version = "0.1.0"
+authors = ["Johan Andersson <repi@repi.se>"]
+edition = "2018"
+
+[dependencies]
+lz4-compression = "*"
+snap = "*"
+smush = { version = "*", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
+
+# non-native 
+cloudflare-zlib = { version = "*", optional = true }
+bzip2 = { version = "*", optional = true }
+
+[features]
+default = []
+non_rust = [
+    "smush/xz_support",
+    "smush/lz4_support",
+    "smush/zstd_support",
+    "cloudflare-zlib",
+    "bzip2"
+]

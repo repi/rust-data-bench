@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "test-compress",
+    "test-hash",
+]
+
+[profile.release]
+lto = true
+codegen-units = 1
