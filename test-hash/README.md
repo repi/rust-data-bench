@@ -45,3 +45,15 @@ ring          SHA512         518 MB/s  z3h2ZTfBMGcy684UZXrGJoyZbmaFo6ehUz4ebWBrf
 ring          SHA512-256     518 MB/s  zU9augYYNho5sHYYYAQ54uQ3i2yu6vGDbQo53kspNVa6
 sthash        STHash        5519 MB/s  zABuaXkXyGjLbUeFEiF6xfFHswpJC8WZP1M45BPQWm1Cy
 ```
+
+## Licence
+
+This software is subject to the terms of the Mozilla Public License, v. 2.0.
+
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of
+Conduct][coc]. By participating in this project you agree to abide by its
+terms.
+
+[coc]: https://github.com/repi/rust-misc/blob/master/CODE_OF_CONDUCT.md

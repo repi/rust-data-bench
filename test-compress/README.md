@@ -61,3 +61,15 @@ bzip2                bzip2-fast   wasm     3.85x    14 MB/s    41 MB/s
 bzip2                bzip2-best   wasm     4.00x    13 MB/s    36 MB/s
 bzip2                bzip2        wasm     4.01x    14 MB/s    37 MB/s
 ```
+
+## Licence
+
+This software is subject to the terms of the Mozilla Public License, v. 2.0.
+
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of
+Conduct][coc]. By participating in this project you agree to abide by its
+terms.
+
+[coc]: https://github.com/repi/rust-misc/blob/master/CODE_OF_CONDUCT.md
