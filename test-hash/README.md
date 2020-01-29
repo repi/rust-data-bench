@@ -4,11 +4,35 @@ Small Rust test program to try out multiple available hashing crates.
 
 Note that the performance numbers here are not very scientific, only a single run is done.
 
-## Example output
+## How to run
+
+For native:
 
 ```sh
 $ cargo run --release 
+```
 
+For WebAssembly using [WASI](http://wasi.dev), with [Wasmer](http://wasmer.io) or [Wasmtime](http://wasmtime.dev):
+
+```sh
+cargo build --release --target wasm32-wasi
+
+# run through wasmer (with default Cranelift backend)
+wasmer run ../target/wasm32-wasi/release/test-hash.wasm
+
+# run through wasmer (with LLVM backend)
+wasmer run --backend=llvm ../target/wasm32-wasi/release/test-hash.wasm
+
+# or run through wasmtime
+wasmtime ../target/wasm32-wasi/release/test-hash.wasm
+```
+
+
+## Example output
+
+On a Threadripper 1950x running Windows 10:
+
+```sh
 twox-hash     XXHash64      5757 MB/s  zKqRW5u9MP6J
 meowhash      MeowHash      9791 MB/s  z34uenbpoCVYLYSFCkAHwy3y8aaEZrHUaFAMrXQejosA8G5TRKUobMjKjoQUDJ7HjfDBy2VrWMKinumC3Ni5hG16n
 seahash       SeaHash       3754 MB/s  zT8urFw2Rq6g

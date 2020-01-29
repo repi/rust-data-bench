@@ -6,6 +6,8 @@ Note that the performance numbers here are not very scientific, only a single ru
 
 ## Example output
 
+On a Threadripper 1950x running Windows 10:
+
 ```
 $ cargo run --release --all-features 
 
