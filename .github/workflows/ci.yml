@@ -26,12 +26,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --lib --tests -- -D warnings
-      - name: cargo clippy (all features)
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --lib --tests --all-features -- -D warnings
+          args: --all-features -- -D warnings
 
   test:
     name: Test
