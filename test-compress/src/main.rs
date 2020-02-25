@@ -45,8 +45,8 @@ fn codecs() -> Vec<Codec> {
         Codec {
             source: "snap",
             name: "snappy",
-            compress_fn: Box::new(|b| snap::Encoder::new().compress_vec(b).unwrap()),
-            decompress_fn: Box::new(|b| snap::Decoder::new().decompress_vec(b).unwrap()),
+            compress_fn: Box::new(|b| snap::raw::Encoder::new().compress_vec(b).unwrap()),
+            decompress_fn: Box::new(|b| snap::raw::Decoder::new().decompress_vec(b).unwrap()),
         },
     ]);
 

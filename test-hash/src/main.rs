@@ -155,7 +155,7 @@ fn main() {
             impl_name,
             hash_name,
             (bytes.len() as f64) / (1024f64 * 1024f64) / start_time.elapsed().as_secs_f64(),
-            multibase::encode(multibase::Base::Base58btc, hash_result)
+            multibase::encode(multibase::Base::Base58Btc, hash_result)
         );
     }
 }
