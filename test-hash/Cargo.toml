@@ -22,6 +22,7 @@ sha3 = "*"
 t1ha = "*"
 twox-hash = "*"
 sthash = "*"
+ahash = "*"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ring = "*"

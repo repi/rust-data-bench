@@ -135,6 +135,17 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
                 let hasher = sthash::Hasher::new(key, None);
                 hasher.hash(b)
             })
+        ),
+
+        // ahash
+
+        ( 
+            "ahash", "aHash", 
+            Box::new(|b| {
+                let mut hasher = ahash::AHasher::new_with_keys(123, 456);
+                hasher.write(b);
+                u64_to_vec(hasher.finish())
+            })
         )
     ]
 }
