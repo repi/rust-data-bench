@@ -160,6 +160,10 @@ struct Options {
     /// Only run hashes with a name that matches the filter string
     #[structopt(long)]
     filter: Option<String>,
+
+    /// Show hash output
+    #[structopt(long)]
+    show_hashes: bool,
 }
 
 fn main() {
@@ -181,12 +185,20 @@ fn main() {
 
         let hash_result = hash_func(&bytes);
 
-        println!(
-            "{:13} {:12} {:>5.0} MB/s  {}",
+        print!(
+            "{:13} {:12} {:>5.0} MB/s",
             impl_name,
             hash_name,
             (bytes.len() as f64) / (1024f64 * 1024f64) / start_time.elapsed().as_secs_f64(),
-            multibase::encode(multibase::Base::Base58Btc, hash_result)
         );
+
+        if options.show_hashes {
+            println!(
+                "  {}",
+                multibase::encode(multibase::Base::Base58Btc, hash_result)
+            );
+        } else {
+            println!("");
+        }
     }
 }
