@@ -25,6 +25,9 @@ wasmer run --backend=llvm ../target/wasm32-wasi/release/test-hash.wasm
 
 # or run through wasmtime
 wasmtime ../target/wasm32-wasi/release/test-hash.wasm
+
+# or WAVM
+wavm ../target/wasm32-wasi/release/test-hash.wasm
 ```
 
 
