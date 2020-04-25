@@ -153,9 +153,13 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
 
 #[derive(StructOpt)]
 struct Options {
-    // Size in megabytes to hash
+    /// Size in megabytes to hash
     #[structopt(long, default_value = "20")]
     size: usize,
+
+    /// Only run hashes with a name that matches the filter string
+    #[structopt(long)]
+    filter: Option<String>,
 }
 
 fn main() {
@@ -167,6 +171,12 @@ fn main() {
     bytes.resize(options.size * 1024 * 1024, 0u8);
 
     for (impl_name, hash_name, hash_func) in &hashes {
+        if let Some(filter) = &options.filter {
+            if !impl_name.contains(filter) {
+                continue; // skip
+            }
+        }
+
         let start_time = Instant::now();
 
         let hash_result = hash_func(&bytes);
