@@ -104,15 +104,15 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
 
         // multihash
 
-        ( "multihash", "SHA1",       Box::new(|b| multihash::encode(multihash::Hash::SHA1, &b).unwrap().digest().to_vec()) ),
-        ( "multihash", "SHA2-256",   Box::new(|b| multihash::encode(multihash::Hash::SHA2256, &b).unwrap().digest().to_vec()) ),
-        ( "multihash", "SHA2-512",   Box::new(|b| multihash::encode(multihash::Hash::SHA2512, &b).unwrap().digest().to_vec()) ),
-        ( "multihash", "SHA3-256",   Box::new(|b| multihash::encode(multihash::Hash::SHA3256, &b).unwrap().digest().to_vec()) ),
-        ( "multihash", "SHA3-512",   Box::new(|b| multihash::encode(multihash::Hash::SHA3512, &b).unwrap().digest().to_vec()) ),       
-        ( "multihash", "Keccak256",  Box::new(|b| multihash::encode(multihash::Hash::Keccak256, &b).unwrap().digest().to_vec()) ),       
-        ( "multihash", "Keccak512",  Box::new(|b| multihash::encode(multihash::Hash::Keccak512, &b).unwrap().digest().to_vec()) ),       
-        ( "multihash", "BLAKE2b",    Box::new(|b| multihash::encode(multihash::Hash::Blake2b512, &b).unwrap().digest().to_vec()) ),       
-        ( "multihash", "BLAKE2s",    Box::new(|b| multihash::encode(multihash::Hash::Blake2s256, &b).unwrap().digest().to_vec()) ),       
+        ( "multihash", "SHA1",       Box::new(|b| multihash::Sha1::digest(&b).to_vec()) ),
+        ( "multihash", "SHA2-256",   Box::new(|b| multihash::Sha2_256::digest(&b).to_vec()) ),
+        ( "multihash", "SHA2-512",   Box::new(|b| multihash::Sha2_512::digest(&b).to_vec()) ),
+        ( "multihash", "SHA3-256",   Box::new(|b| multihash::Sha3_256::digest(&b).to_vec()) ),
+        ( "multihash", "SHA3-512",   Box::new(|b| multihash::Sha3_512::digest(&b).to_vec()) ),       
+        ( "multihash", "Keccak256",  Box::new(|b| multihash::Keccak256::digest(&b).to_vec()) ),       
+        ( "multihash", "Keccak512",  Box::new(|b| multihash::Keccak512::digest(&b).to_vec()) ),       
+        ( "multihash", "BLAKE2b",    Box::new(|b| multihash::Blake2b512::digest(&b).to_vec()) ),       
+        ( "multihash", "BLAKE2s",    Box::new(|b| multihash::Blake2s256::digest(&b).to_vec()) ),       
 
         // ring
 
