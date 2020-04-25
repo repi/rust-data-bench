@@ -1,6 +1,7 @@
 use blake2::Digest as BlakeDigest;
 use std::hash::Hasher;
 use std::time::Instant;
+use structopt::StructOpt;
 
 fn u64_to_vec(v: u64) -> Vec<u8> {
     use byteorder::{LittleEndian, WriteBytesExt};
@@ -150,11 +151,20 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
     ]
 }
 
+#[derive(StructOpt)]
+struct Options {
+    // Size in megabytes to hash
+    #[structopt(long, default_value = "20")]
+    size: usize,
+}
+
 fn main() {
+    let options = Options::from_args();
+
     let hashes = hashes();
 
     let mut bytes = Vec::new();
-    bytes.resize(10 * 1024 * 1024, 0u8);
+    bytes.resize(options.size * 1024 * 1024, 0u8);
 
     for (impl_name, hash_name, hash_func) in &hashes {
         let start_time = Instant::now();
