@@ -213,7 +213,7 @@ fn main() {
                         multibase::encode(multibase::Base::Base58Btc, hash_result)
                     );
                 } else {
-                    println!("");
+                    println!();
                 }
             }
             Format::Csv => {

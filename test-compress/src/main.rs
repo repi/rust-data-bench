@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use std::io::Read;
 use std::time::Instant;
 
