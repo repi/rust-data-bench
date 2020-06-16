@@ -66,9 +66,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         (
             "meowhash", "MeowHash",
             Box::new(|b| {
-                let mut hasher = meowhash::MeowHasher::new();
-                hasher.input(&b);
-                hasher.result().to_vec()
+                meowhash::MeowHasher::hash(&b).into_bytes().to_vec()
             }),
         ),
         
@@ -98,11 +96,11 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         ( 
             "blake2b", "BLAKE2b-256", 
             Box::new(|b| {
-                use digest::{Input, VariableOutput};
+                use blake2::digest::{VariableOutputDirty, Update};
                 let mut hasher = blake2::VarBlake2b::new(32).unwrap();
-                hasher.input(&b);
+                hasher.update(&b);
                 let mut t = vec![];
-                hasher.variable_result(|res| t = res.to_vec());
+                hasher.finalize_variable_dirty(|res| t = res.to_vec());
                 t                
             }) 
         ),

@@ -13,7 +13,6 @@ blake2s_simd = "*"
 blake3 = "*"
 #blake3 = { version = "*", features = ["rayon"] }
 byteorder = "*"
-digest = "*"
 md5 = "*"
 multibase = "*"
 multihash = "*"
