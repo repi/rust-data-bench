@@ -1,7 +1,17 @@
+#![allow(dead_code)]
+
 use blake2::Digest as BlakeDigest;
 use std::hash::Hasher;
 use std::time::Instant;
 use structopt::{clap::arg_enum, StructOpt};
+
+fn u32_to_vec(v: u32) -> Vec<u8> {
+    use byteorder::{LittleEndian, WriteBytesExt};
+
+    let mut vec = vec![];
+    let _ = vec.write_u32::<LittleEndian>(v);
+    vec
+}
 
 fn u64_to_vec(v: u64) -> Vec<u8> {
     use byteorder::{LittleEndian, WriteBytesExt};
@@ -11,19 +21,45 @@ fn u64_to_vec(v: u64) -> Vec<u8> {
     vec
 }
 
+fn u128_to_vec(v: u128) -> Vec<u8> {
+    use byteorder::{LittleEndian, WriteBytesExt};
+
+    let mut vec = vec![];
+    let _ = vec.write_u128::<LittleEndian>(v);
+    vec
+}
+
 #[rustfmt::skip]
 #[allow(clippy::type_complexity)]
 fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> {
     vec![
         // twox-hash
         ( 
-            "twox-hash", "XXHash64", 
+            "twox-hash", "XXH_32", 
             Box::new(|b| {
-                let mut hasher = twox_hash::XxHash::with_seed(0);
+                let mut hasher = twox_hash::XxHash32::with_seed(0);
+                hasher.write(&b);
+                u32_to_vec(hasher.finish() as u32)
+            }),
+        ),
+        ( 
+            "twox-hash", "XXH_64", 
+            Box::new(|b| {
+                let mut hasher = twox_hash::XxHash64::with_seed(0);
                 hasher.write(&b);
                 u64_to_vec(hasher.finish())
             }),
         ),
+
+        // xxhrs
+        #[cfg(not(target_arch = "wasm32"))]
+        ( "xxhrs", "XXH_32", Box::new(|b| u32_to_vec(xxhrs::XXH32::hash(&b)) ), ),
+        #[cfg(not(target_arch = "wasm32"))]
+        ( "xxhrs", "XXH_64", Box::new(|b| u64_to_vec(xxhrs::XXH64::hash(&b)) ), ),
+        #[cfg(not(target_arch = "wasm32"))]
+        ( "xxhrs", "XXH3_64", Box::new(|b| u64_to_vec(xxhrs::XXH3_64::hash(&b)) ), ),
+        #[cfg(not(target_arch = "wasm32"))]
+        ( "xxhrs", "XXH3_128", Box::new(|b| u128_to_vec(xxhrs::XXH3_128::hash(&b)) ), ),
 
         // meowhash
         #[cfg(not(target_arch = "wasm32"))]
