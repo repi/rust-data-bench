@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use blake2::Digest as BlakeDigest;
+use std::collections::HashSet;
 use std::hash::Hasher;
 use std::time::Instant;
 use structopt::{clap::arg_enum, StructOpt};
@@ -35,7 +36,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
     vec![
         // twox-hash
         ( 
-            "twox-hash", "XXH_32", 
+            "twox-hash", "XXH-32", 
             Box::new(|b| {
                 let mut hasher = twox_hash::XxHash32::with_seed(0);
                 hasher.write(&b);
@@ -43,7 +44,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
             }),
         ),
         ( 
-            "twox-hash", "XXH_64", 
+            "twox-hash", "XXH-64", 
             Box::new(|b| {
                 let mut hasher = twox_hash::XxHash64::with_seed(0);
                 hasher.write(&b);
@@ -53,13 +54,13 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
 
         // xxhrs
         #[cfg(not(target_arch = "wasm32"))]
-        ( "xxhrs", "XXH_32", Box::new(|b| u32_to_vec(xxhrs::XXH32::hash(&b)) ), ),
+        ( "xxhrs", "XXH-32", Box::new(|b| u32_to_vec(xxhrs::XXH32::hash(&b)) ), ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "xxhrs", "XXH_64", Box::new(|b| u64_to_vec(xxhrs::XXH64::hash(&b)) ), ),
+        ( "xxhrs", "XXH-64", Box::new(|b| u64_to_vec(xxhrs::XXH64::hash(&b)) ), ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "xxhrs", "XXH3_64", Box::new(|b| u64_to_vec(xxhrs::XXH3_64::hash(&b)) ), ),
+        ( "xxhrs", "XXH3-64", Box::new(|b| u64_to_vec(xxhrs::XXH3_64::hash(&b)) ), ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "xxhrs", "XXH3_128", Box::new(|b| u128_to_vec(xxhrs::XXH3_128::hash(&b)) ), ),
+        ( "xxhrs", "XXH3-128", Box::new(|b| u128_to_vec(xxhrs::XXH3_128::hash(&b)) ), ),
 
         // meowhash
         #[cfg(not(target_arch = "wasm32"))]
@@ -144,8 +145,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         ( "multihash", "SHA2-512",   Box::new(|b| multihash::Sha2_512::digest(&b).to_vec()) ),
         ( "multihash", "SHA3-256",   Box::new(|b| multihash::Sha3_256::digest(&b).to_vec()) ),
         ( "multihash", "SHA3-512",   Box::new(|b| multihash::Sha3_512::digest(&b).to_vec()) ),       
-        ( "multihash", "Keccak256",  Box::new(|b| multihash::Keccak256::digest(&b).to_vec()) ),       
-        ( "multihash", "Keccak512",  Box::new(|b| multihash::Keccak512::digest(&b).to_vec()) ),       
+        ( "multihash", "Keccak-256", Box::new(|b| multihash::Keccak256::digest(&b).to_vec()) ),       
+        ( "multihash", "Keccak-512", Box::new(|b| multihash::Keccak512::digest(&b).to_vec()) ),       
         ( "multihash", "BLAKE2b",    Box::new(|b| multihash::Blake2b512::digest(&b).to_vec()) ),       
         ( "multihash", "BLAKE2s",    Box::new(|b| multihash::Blake2s256::digest(&b).to_vec()) ),       
 
@@ -210,11 +211,18 @@ struct Options {
     // Output format
     #[structopt(long, default_value = "Text", possible_values = &Format::variants(), case_insensitive = true)]
     format: Format,
+
+    #[structopt(subcommand)]
+    cmd: Option<Command>,
 }
 
-fn main() {
-    let options = Options::from_args();
+#[derive(StructOpt)]
+enum Command {
+    /// List supported hash types
+    ListHashes,
+}
 
+fn perf_test(options: Options) {
     let hashes = hashes();
 
     let mut bytes = Vec::new();
@@ -254,5 +262,28 @@ fn main() {
                 println!("{},{},{:.0}", impl_name, hash_name, speed);
             }
         }
+    }
+}
+
+fn list_hashes() {
+    let mut hash_names = hashes()
+        .into_iter()
+        .map(|(_, hash_name, _)| hash_name.to_string())
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect::<Vec<_>>();
+    hash_names.sort();
+
+    for hash_name in hash_names {
+        println!("{}", hash_name);
+    }
+}
+
+fn main() {
+    let options = Options::from_args();
+
+    match options.cmd {
+        Some(Command::ListHashes) => list_hashes(),
+        None => perf_test(options),
     }
 }
