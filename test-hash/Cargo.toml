@@ -27,4 +27,6 @@ ahash = "*"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ring = "*"
 meowhash = "*"
-xxhrs = "*"
+
+# https://github.com/koraa/xxhrs/pull/4
+xxhrs = { git = "https://github.com/EmbarkStudios/xxhrs", branch = "fix-windows" }
