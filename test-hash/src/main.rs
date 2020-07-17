@@ -136,6 +136,14 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         // blake3
 
         ( "blake3", "BLAKE3",  Box::new(|b| blake3::hash(&b).as_bytes().to_vec()) ),
+        ( 
+            "blake3-rayon", "BLAKE3",  
+            Box::new(|b| {
+                let mut hasher = blake3::Hasher::new();
+                hasher.update_with_join::<blake3::join::RayonJoin>(b);
+                blake3::Hasher::finalize(&hasher).as_bytes().to_vec()
+            })
+        ),
 
 
         // multihash

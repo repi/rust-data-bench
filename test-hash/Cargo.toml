@@ -10,8 +10,7 @@ structopt = "0.3"
 blake2 = "*"
 blake2b_simd = "*"
 blake2s_simd = "*"
-blake3 = "*"
-#blake3 = { version = "*", features = ["rayon"] }
+blake3 = { version = "*", features = ["rayon"] }
 byteorder = "*"
 md5 = "*"
 multibase = "*"
