@@ -8,8 +8,8 @@ Note that the performance numbers here are not very scientific, only a single ru
 
 On a Threadripper 1950x running Windows 10:
 
-```
-$ cargo run --release --all-features 
+```sh
+$ cargo run --release --all-features
 
 smush                zstd-0       bincode  2.58x   143 MB/s   351 MB/s
 smush                zstd-1       bincode  2.49x   241 MB/s   371 MB/s

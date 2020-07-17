@@ -30,7 +30,6 @@ wasmtime ../target/wasm32-wasi/release/test-hash.wasm
 wavm run ../target/wasm32-wasi/release/test-hash.wasm
 ```
 
-
 ## Example output
 
 On a Threadripper 1950x running Windows 10:
