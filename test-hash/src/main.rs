@@ -63,7 +63,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         ( "xxhrs", "XXH3-128", Box::new(|b| u128_to_vec(xxhrs::XXH3_128::hash(&b)) ), ),
 
         // meowhash
-        #[cfg(not(target_arch = "wasm32"))]
+        #[cfg(target_arch = "x86_64")]
         (
             "meowhash", "MeowHash",
             Box::new(|b| {
