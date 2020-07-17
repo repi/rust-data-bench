@@ -23,8 +23,10 @@ twox-hash = "*"
 sthash = "*"
 ahash = "*"
 
-[target.'cfg(target_arch = "x86_64")'.dependencies]
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ring = "*"
+
+[target.'cfg(target_arch = "x86_64")'.dependencies]
 meowhash = "*"
 
 # https://github.com/koraa/xxhrs/pull/4
