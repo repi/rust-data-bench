@@ -6,13 +6,13 @@ license = "MPL-2.0"
 edition = "2018"
 
 [dependencies]
-lz4-compression = "*"
-snap = "*"
-smush = { version = "*", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
+lz4-compression = "0.7.0"
+snap = "1.0.1"
+smush = { version = "0.1.5", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
 
 # non-native 
-cloudflare-zlib = { version = "*", optional = true }
-bzip2 = { version = "*", optional = true }
+cloudflare-zlib = { version = "0.2.5", optional = true }
+bzip2 = { version = "0.4.1", optional = true }
 
 [features]
 default = []
