@@ -81,17 +81,17 @@ fn codecs() -> Vec<Codec> {
     ]);
 
     #[cfg(feature = "non_rust")]
-    for (comp_name, compression) in &[
-        ("bzip2-fast", bzip2::Compression::Fastest),
-        ("bzip2-best", bzip2::Compression::Best),
-        ("bzip2", bzip2::Compression::Default),
+    for (comp_name, compression) in vec![
+        ("bzip2-fast", bzip2::Compression::fast()),
+        ("bzip2-best", bzip2::Compression::best()),
+        ("bzip2", bzip2::Compression::default()),
     ] {
         v.push(Codec {
             source: "bzip2",
             name: comp_name,
             compress_fn: Box::new(move |b| {
                 let mut out = vec![];
-                bzip2::read::BzEncoder::new(b, *compression)
+                bzip2::read::BzEncoder::new(b, compression.clone())
                     .read_to_end(&mut out)
                     .unwrap();
                 out
