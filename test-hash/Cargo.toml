@@ -21,7 +21,7 @@ sha3 = "0.9.1"
 t1ha = "0.1.0"
 twox-hash = "1.5.0"
 sthash = "0.2.6"
-ahash = "0.4.3"
+ahash = "0.4.4"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ring = "0.16.15"
