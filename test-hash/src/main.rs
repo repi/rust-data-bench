@@ -52,7 +52,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
             }),
         ),
 
-        // xxhrs
+        // xxhrs - disable as doesn't compile on Windows
+    /*        
         #[cfg(not(target_arch = "wasm32"))]
         ( "xxhrs", "XXH-32", Box::new(|b| u32_to_vec(xxhrs::XXH32::hash(&b)) ), ),
         #[cfg(not(target_arch = "wasm32"))]
@@ -61,7 +62,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
         ( "xxhrs", "XXH3-64", Box::new(|b| u64_to_vec(xxhrs::XXH3_64::hash(&b)) ), ),
         #[cfg(not(target_arch = "wasm32"))]
         ( "xxhrs", "XXH3-128", Box::new(|b| u128_to_vec(xxhrs::XXH3_128::hash(&b)) ), ),
-
+    */
         // meowhash
         #[cfg(target_arch = "x86_64")]
         (
