@@ -1102,7 +1102,7 @@ dependencies = [
  "structopt 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)",
  "t1ha 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "twox-hash 1.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "xxhrs 1.0.1 (git+https://github.com/EmbarkStudios/xxhrs?branch=fix-windows)",
+ "xxhrs 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1278,7 +1278,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "xxhrs"
 version = "1.0.1"
-source = "git+https://github.com/EmbarkStudios/xxhrs?branch=fix-windows#767ac1264f0a6308a91f7f6d9ba8fbfe65fa9945"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "anyhow 1.0.32 (registry+https://github.com/rust-lang/crates.io-index)",
  "bindgen 0.54.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1480,7 +1480,7 @@ dependencies = [
 "checksum winapi-i686-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
 "checksum winapi-util 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "70ec6ce85bb158151cae5e5c87f95a8e97d2c0c4b001223f33a334e3ce5de178"
 "checksum winapi-x86_64-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-"checksum xxhrs 1.0.1 (git+https://github.com/EmbarkStudios/xxhrs?branch=fix-windows)" = "<none>"
+"checksum xxhrs 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "4c7fa1b5398de01cb3bc3128dadcb32ed233e47859f706303ce3e4dd8c9396d8"
 "checksum xz2 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "c179869f34fc7c01830d3ce7ea2086bc3a07e0d35289b667d0a8bf910258926c"
 "checksum zstd 0.5.3+zstd.1.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "01b32eaf771efa709e8308605bbf9319bf485dc1503179ec0469b611937c0cd8"
 "checksum zstd-safe 2.0.5+zstd.1.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "1cfb642e0d27f64729a639c52db457e0ae906e7bc6f5fe8f5c453230400f1055"
