@@ -39,6 +39,15 @@ fn codecs() -> Vec<Codec> {
 
     v.extend(vec![
         Codec {
+            source: "lz4-flex",
+            name: "lz4",
+            compress_fn: Box::new(|b| lz4_flex::compress_prepend_size(b)),
+            decompress_fn: Box::new(|b| lz4_flex::decompress_size_prepended(b).unwrap()),
+        },
+    ]);
+
+    v.extend(vec![
+        Codec {
             source: "lz4-compression",
             name: "lz4",
             compress_fn: Box::new(|b| lz4_compression::compress::compress(b)),
