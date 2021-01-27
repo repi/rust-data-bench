@@ -52,7 +52,7 @@ fn codecs() -> Vec<Codec> {
         },
     ]);
 
-    #[cfg(feature = "non_rust")]
+    #[cfg(all(feature = "non_rust", target_arch = "x86_64"))]
     v.extend(vec![
         Codec {
             source: "cloudflare-zlib",
