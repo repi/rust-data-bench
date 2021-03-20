@@ -146,6 +146,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> 
             })
         ),
 
+        ( "bao", "bao-combined",  Box::new(|b| bao::encode::encode(&b).1.as_bytes().to_vec()) ),
+        ( "bao", "bao-outboard",  Box::new(|b| bao::encode::outboard(&b).1.as_bytes().to_vec()) ),
 
         // multihash
 
