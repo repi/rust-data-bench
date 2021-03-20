@@ -14,13 +14,15 @@ smush = { version = "0.1.5", default-features = false, features = ["gzip_support
 # non-native 
 cloudflare-zlib = { version = "0.2.5", optional = true }
 bzip2 = { version = "0.4.1", optional = true }
+zstd = { version = "0.6.1", optional = true }
 
 [features]
 default = []
 non_rust = [
     "smush/xz_support",
     "smush/lz4_support",
-    "smush/zstd_support",
+    #"smush/zstd_support",
     "cloudflare-zlib",
-    "bzip2"
+    "bzip2",
+    "zstd",
 ]

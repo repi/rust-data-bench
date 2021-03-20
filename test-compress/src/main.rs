@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 
-use std::io::Read;
+use std::io::{Cursor, Read};
 use std::time::{Duration, Instant};
 
 struct Codec {
@@ -110,6 +110,22 @@ fn codecs() -> Vec<Codec> {
                     .unwrap();
                 out
             }),
+        });
+    }
+
+    #[cfg(feature = "non_rust")]
+    for (name, level) in vec![
+        // default as same as 0 here
+        //("zstd-def", zstd::DEFAULT_COMPRESSION_LEVEL),
+        ("zstd-0", 0),
+        ("zstd-1", 1),
+        ("zstd-11", 11),
+    ] {
+        v.push(Codec {
+            source: "zstd",
+            name,
+            compress_fn: Box::new(move |b| zstd::encode_all(Cursor::new(b), level).unwrap()),
+            decompress_fn: Box::new(|b| zstd::decode_all(Cursor::new(b)).unwrap()),
         });
     }
 
