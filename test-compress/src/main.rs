@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 
 use std::io::Read;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 struct Codec {
     pub source: &'static str,
@@ -37,14 +37,12 @@ fn smush_codecs() -> Vec<Codec> {
 fn codecs() -> Vec<Codec> {
     let mut v = smush_codecs();
 
-    v.extend(vec![
-        Codec {
-            source: "lz4-flex",
-            name: "lz4",
-            compress_fn: Box::new(|b| lz4_flex::compress_prepend_size(b)),
-            decompress_fn: Box::new(|b| lz4_flex::decompress_size_prepended(b).unwrap()),
-        },
-    ]);
+    v.extend(vec![Codec {
+        source: "lz4-flex",
+        name: "lz4",
+        compress_fn: Box::new(|b| lz4_flex::compress_prepend_size(b)),
+        decompress_fn: Box::new(|b| lz4_flex::decompress_size_prepended(b).unwrap()),
+    }]);
 
     v.extend(vec![
         Codec {
@@ -118,6 +116,13 @@ fn codecs() -> Vec<Codec> {
     v
 }
 
+struct CodecTestOutput {
+    codec: Codec,
+    compress_duration: Duration,
+    decompress_duration: Duration,
+    compress_size: usize,
+}
+
 fn main() {
     let datas = vec![
         ("bincode", include_bytes!("../data/bincode").to_vec()),
@@ -126,25 +131,45 @@ fn main() {
     ];
 
     for (data_name, data_bytes) in &datas {
-        for codec in &codecs() {
-            let start_time = Instant::now();
-            let compress_bytes = (codec.compress_fn)(&data_bytes);
-            let compress_duration = start_time.elapsed();
+        println!(
+            "----- data: {:7} ----------------------------------------",
+            data_name
+        );
 
-            let start_time2 = Instant::now();
-            let decompress_bytes = (codec.decompress_fn)(&compress_bytes);
-            let decompress_duration = start_time2.elapsed();
+        let mut results = codecs()
+            .into_iter()
+            .map(|codec| {
+                let start_time = Instant::now();
+                let compress_bytes = (codec.compress_fn)(&data_bytes);
+                let compress_duration = start_time.elapsed();
 
-            assert_eq!(data_bytes, &decompress_bytes);
+                let start_time2 = Instant::now();
+                let decompress_bytes = (codec.decompress_fn)(&compress_bytes);
+                let decompress_duration = start_time2.elapsed();
 
+                assert_eq!(data_bytes, &decompress_bytes);
+
+                CodecTestOutput {
+                    codec,
+                    compress_duration,
+                    decompress_duration,
+                    compress_size: compress_bytes.len(),
+                }
+            })
+            .collect::<Vec<_>>();
+
+        results.sort_by_key(|r| r.compress_size);
+
+        for r in results {
             println!(
-                "{:20} {:12} {:8} {:.2}x {:>5.0} MB/s {:>5.0} MB/s",
-                codec.source,
-                codec.name,
-                data_name,
-                (data_bytes.len() as f32 / compress_bytes.len() as f32),
-                (data_bytes.len() as f64) / (1024f64 * 1024f64) / compress_duration.as_secs_f64(),
-                (data_bytes.len() as f64) / (1024f64 * 1024f64) / decompress_duration.as_secs_f64(),
+                "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s",
+                r.codec.source,
+                r.codec.name,
+                (data_bytes.len() as f32 / r.compress_size as f32),
+                (data_bytes.len() as f64) / (1024f64 * 1024f64) / r.compress_duration.as_secs_f64(),
+                (data_bytes.len() as f64)
+                    / (1024f64 * 1024f64)
+                    / r.decompress_duration.as_secs_f64(),
             );
         }
     }
