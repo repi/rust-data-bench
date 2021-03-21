@@ -98,8 +98,11 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         
         // sha3
         ( "sha3", "SHA3-256", Box::new(|b| sha3::Sha3_256::digest(&b).to_vec()) ),
+        ( "sha3", "SHA3-384", Box::new(|b| sha3::Sha3_384::digest(&b).to_vec()) ),
         ( "sha3", "SHA3-512", Box::new(|b| sha3::Sha3_512::digest(&b).to_vec()) ),
-
+        ( "sha3", "Keccak256", Box::new(|b| sha3::Keccak256::digest(&b).to_vec()) ),
+        ( "sha3", "Keccak384", Box::new(|b| sha3::Keccak384::digest(&b).to_vec()) ),
+        ( "sha3", "Keccak512", Box::new(|b| sha3::Keccak512::digest(&b).to_vec()) ),
 
         // blake2
         ( "blake2b", "BLAKE2b", Box::new(|b| blake2::Blake2b::digest(&b).to_vec()) ),
