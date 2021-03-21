@@ -1052,6 +1052,7 @@ dependencies = [
  "sthash",
  "structopt",
  "t1ha",
+ "tiny-keccak",
  "twox-hash",
 ]
 

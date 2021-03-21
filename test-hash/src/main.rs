@@ -31,6 +31,13 @@ fn u128_to_vec(v: u128) -> Vec<u8> {
     vec
 }
 
+fn tiny_keccak_hash(mut hasher: impl tiny_keccak::Hasher, bytes: &[u8]) -> Vec<u8> {
+    let mut output = [0u8; 32];
+    hasher.update(bytes);
+    hasher.finalize(&mut output);
+    output.to_vec()
+}
+
 #[rustfmt::skip]
 #[allow(clippy::type_complexity)]
 fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + Send + Sync>)> {
@@ -162,6 +169,17 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         ( "multihash", "BLAKE2b",    Box::new(|b| multihash::Blake2b512::digest(&b).to_vec()) ),       
         ( "multihash", "BLAKE2s",    Box::new(|b| multihash::Blake2s256::digest(&b).to_vec()) ),       
 
+        // tiny-keccak
+        ( "tiny-keccak", "Keccak-224", Box::new(|b| tiny_keccak_hash(tiny_keccak::Keccak::v224(), b) ) ),
+        ( "tiny-keccak", "Keccak-256", Box::new(|b| tiny_keccak_hash(tiny_keccak::Keccak::v256(), b) ) ),
+        ( "tiny-keccak", "Keccak-384", Box::new(|b| tiny_keccak_hash(tiny_keccak::Keccak::v384(), b) ) ),
+        ( "tiny-keccak", "Keccak-512", Box::new(|b| tiny_keccak_hash(tiny_keccak::Keccak::v512(), b) ) ),
+        ( "tiny-keccak", "SHA3-224", Box::new(|b| tiny_keccak_hash(tiny_keccak::Sha3::v224(), b) ) ),
+        ( "tiny-keccak", "SHA3-256", Box::new(|b| tiny_keccak_hash(tiny_keccak::Sha3::v256(), b) ) ),
+        ( "tiny-keccak", "SHA3-384", Box::new(|b| tiny_keccak_hash(tiny_keccak::Sha3::v384(), b) ) ),
+        ( "tiny-keccak", "SHA3-512", Box::new(|b| tiny_keccak_hash(tiny_keccak::Sha3::v512(), b) ) ),
+        ( "tiny-keccak", "KangarooTwelve", Box::new(|b| tiny_keccak_hash(tiny_keccak::KangarooTwelve::new("string-input"), b) ) ),
+
         // ring
 
         #[cfg(not(target_arch = "wasm32"))]
@@ -278,7 +296,7 @@ fn perf_test(options: Options) {
         match options.format {
             Format::Text => {
                 print!(
-                    "{:13} {:12} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
+                    "{:13} {:14} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
                     impl_name,
                     hash_name,
                     st_speed,
