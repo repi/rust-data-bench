@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use blake2::Digest as BlakeDigest;
+use rayon::prelude::*;
 use std::collections::HashSet;
 use std::hash::Hasher;
 use std::time::Instant;
@@ -32,7 +33,7 @@ fn u128_to_vec(v: u128) -> Vec<u8> {
 
 #[rustfmt::skip]
 #[allow(clippy::type_complexity)]
-fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8>>)> {
+fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + Send + Sync>)> {
     vec![
         // twox-hash
         ( 
@@ -219,6 +220,10 @@ struct Options {
     #[structopt(long)]
     show_hashes: bool,
 
+    // Number of threads to test with
+    #[structopt(long)]
+    threads: Option<usize>,
+
     // Output format
     #[structopt(long, default_value = "Text", possible_values = &Format::variants(), case_insensitive = true)]
     format: Format,
@@ -236,6 +241,13 @@ enum Command {
 fn perf_test(options: Options) {
     let hashes = hashes();
 
+    let threads = options.threads.unwrap_or_else(|| num_cpus::get());
+    println!("threads: {}", threads);
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .build_global()
+        .unwrap();
+
     let mut bytes = Vec::new();
     bytes.resize(options.size * 1024 * 1024, 0u8);
 
@@ -251,14 +263,28 @@ fn perf_test(options: Options) {
         }
 
         let start_time = Instant::now();
-
         let hash_result = hash_func(&bytes);
+        let st_duration = start_time.elapsed().as_secs_f64();
 
-        let speed = (bytes.len() as f64) / (1024f64 * 1024f64) / start_time.elapsed().as_secs_f64();
+        let start_time = Instant::now();
+        (0..threads).into_par_iter().for_each(|_i| {
+            let _ = hash_func(&bytes);
+        });
+        let mt_duration = start_time.elapsed().as_secs_f64() / (threads as f64);
+
+        let st_speed = (bytes.len() as f64) / (1024f64 * 1024f64) / st_duration;
+        let mt_speed = (bytes.len() as f64) / (1024f64 * 1024f64) / mt_duration;
 
         match options.format {
             Format::Text => {
-                print!("{:13} {:12} {:>5.0} MB/s", impl_name, hash_name, speed);
+                print!(
+                    "{:13} {:12} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
+                    impl_name,
+                    hash_name,
+                    st_speed,
+                    mt_speed,
+                    mt_speed / st_speed
+                );
 
                 if options.show_hashes {
                     println!(
@@ -270,7 +296,14 @@ fn perf_test(options: Options) {
                 }
             }
             Format::Csv => {
-                println!("{},{},{:.0}", impl_name, hash_name, speed);
+                println!(
+                    "{},{},{:.0},{:.0},{}",
+                    impl_name,
+                    hash_name,
+                    st_speed,
+                    mt_speed,
+                    mt_speed / st_speed
+                );
             }
         }
     }

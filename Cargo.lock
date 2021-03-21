@@ -1043,6 +1043,8 @@ dependencies = [
  "meowhash",
  "multibase",
  "multihash",
+ "num_cpus",
+ "rayon",
  "ring",
  "seahash",
  "sha2",
