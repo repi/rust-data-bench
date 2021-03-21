@@ -1021,6 +1021,8 @@ dependencies = [
  "cloudflare-zlib",
  "lz4-compression",
  "lz4_flex",
+ "num_cpus",
+ "rayon",
  "smush",
  "snap",
  "zstd",

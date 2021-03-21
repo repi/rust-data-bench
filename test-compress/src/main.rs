@@ -1,13 +1,14 @@
 #![allow(unused_imports)]
 
+use rayon::prelude::*;
 use std::io::{Cursor, Read};
 use std::time::{Duration, Instant};
 
 struct Codec {
     pub source: &'static str,
     pub name: &'static str,
-    pub compress_fn: Box<dyn Fn(&[u8]) -> Vec<u8>>,
-    pub decompress_fn: Box<dyn Fn(&[u8]) -> Vec<u8>>,
+    pub compress_fn: Box<dyn Fn(&[u8]) -> Vec<u8> + Send + Sync>,
+    pub decompress_fn: Box<dyn Fn(&[u8]) -> Vec<u8> + Send + Sync>,
 }
 
 fn smush_codecs() -> Vec<Codec> {
@@ -134,9 +135,12 @@ fn codecs() -> Vec<Codec> {
 
 struct CodecTestOutput {
     codec: Codec,
-    compress_duration: Duration,
-    decompress_duration: Duration,
     compress_size: usize,
+
+    st_compress_duration: Duration,
+    st_decompress_duration: Duration,
+    mt_compress_duration: Duration,
+    mt_decompress_duration: Duration,
 }
 
 fn main() {
@@ -145,6 +149,13 @@ fn main() {
         ("json", include_bytes!("../data/json").to_vec()),
         ("wasm", include_bytes!("../data/wasm").to_vec()),
     ];
+
+    let threads = num_cpus::get();
+    println!("threads: {}", threads);
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .build_global()
+        .unwrap();
 
     for (data_name, data_bytes) in &datas {
         println!(
@@ -155,21 +166,39 @@ fn main() {
         let mut results = codecs()
             .into_iter()
             .map(|codec| {
+                // singlethreaded test
+
                 let start_time = Instant::now();
                 let compress_bytes = (codec.compress_fn)(&data_bytes);
-                let compress_duration = start_time.elapsed();
+                let st_compress_duration = start_time.elapsed();
 
                 let start_time2 = Instant::now();
                 let decompress_bytes = (codec.decompress_fn)(&compress_bytes);
-                let decompress_duration = start_time2.elapsed();
+                let st_decompress_duration = start_time2.elapsed();
 
                 assert_eq!(data_bytes, &decompress_bytes);
 
+                // multithreaded test
+
+                let start_time = Instant::now();
+                (0..threads).into_par_iter().for_each(|_i| {
+                    let _ = (codec.compress_fn)(&data_bytes);
+                });
+                let mt_compress_duration = start_time.elapsed() / threads as u32;
+
+                let start_time = Instant::now();
+                (0..threads).into_par_iter().for_each(|_i| {
+                    let _ = (codec.decompress_fn)(&compress_bytes);
+                });
+                let mt_decompress_duration = start_time.elapsed() / threads as u32;
+
                 CodecTestOutput {
                     codec,
-                    compress_duration,
-                    decompress_duration,
                     compress_size: compress_bytes.len(),
+                    st_compress_duration,
+                    st_decompress_duration,
+                    mt_compress_duration,
+                    mt_decompress_duration,
                 }
             })
             .collect::<Vec<_>>();
@@ -178,14 +207,24 @@ fn main() {
 
         for r in results {
             println!(
-                "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s",
+                "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x  {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x",
                 r.codec.source,
                 r.codec.name,
                 (data_bytes.len() as f32 / r.compress_size as f32),
-                (data_bytes.len() as f64) / (1024f64 * 1024f64) / r.compress_duration.as_secs_f64(),
                 (data_bytes.len() as f64)
                     / (1024f64 * 1024f64)
-                    / r.decompress_duration.as_secs_f64(),
+                    / r.st_compress_duration.as_secs_f64(),
+                (data_bytes.len() as f64)
+                    / (1024f64 * 1024f64)
+                    / r.mt_compress_duration.as_secs_f64(),
+                    r.st_compress_duration.as_secs_f64() / r.mt_compress_duration.as_secs_f64(),
+                (data_bytes.len() as f64)
+                    / (1024f64 * 1024f64)
+                    / r.st_decompress_duration.as_secs_f64(),
+                (data_bytes.len() as f64)
+                    / (1024f64 * 1024f64)
+                    / r.mt_decompress_duration.as_secs_f64(),
+                    r.st_decompress_duration.as_secs_f64() / r.mt_decompress_duration.as_secs_f64(),
             );
         }
     }
