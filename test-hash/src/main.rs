@@ -263,9 +263,12 @@ enum Command {
 }
 
 fn perf_test(options: Options) {
-    let hashes = hashes();
+    let mut hashes = hashes();
+    hashes.sort_by(|(_, hash1, _), (_, hash2, _)| {
+        hash1.to_ascii_lowercase().cmp(&hash2.to_ascii_lowercase())
+    });
 
-    let threads = options.threads.unwrap_or_else(|| num_cpus::get());
+    let threads = options.threads.unwrap_or_else(num_cpus::get);
     println!("threads: {}", threads);
     rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
@@ -302,9 +305,9 @@ fn perf_test(options: Options) {
         match options.format {
             Format::Text => {
                 print!(
-                    "{:13} {:14} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
-                    impl_name,
+                    "{:14} {:13} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
                     hash_name,
+                    impl_name,
                     st_speed,
                     mt_speed,
                     mt_speed / st_speed
