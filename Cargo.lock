@@ -603,6 +603,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "md-5"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b5a279bb9607f9f53c22d496eade00d138d1bdcccd07d74650387cf94942a15"
+dependencies = [
+ "block-buffer",
+ "digest 0.9.0",
+ "opaque-debug",
+]
+
+[[package]]
 name = "md5"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1039,6 +1050,7 @@ dependencies = [
  "blake2s_simd",
  "blake3 0.3.7",
  "byteorder",
+ "md-5",
  "md5",
  "meowhash",
  "multibase",

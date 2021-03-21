@@ -90,6 +90,13 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         // md5
         ( "md5", "MD5", Box::new(|b| md5::compute(b).to_vec() ) ),
 
+        // md-5
+        ( "md-5", "MD5", Box::new(|b| {
+            let mut hasher = md5_alt::Md5::new();
+            hasher.update(&b);
+            hasher.finalize().to_vec()
+        }) ),
+
         // sha2
         ( "sha2", "SHA-256", Box::new(|b| sha2::Sha256::digest(&b).to_vec()) ),
         ( "sha2", "SHA-384", Box::new(|b| sha2::Sha384::digest(&b).to_vec()) ),
