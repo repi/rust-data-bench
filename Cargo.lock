@@ -515,6 +515,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "highway"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66920f2e905206a4aca271ae71f1638f10854e3739f162fc465fb8aecce44446"
+
+[[package]]
 name = "jobserver"
 version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1056,6 +1062,7 @@ dependencies = [
  "blake2s_simd",
  "blake3 0.3.7",
  "byteorder",
+ "highway",
  "md-5",
  "md5",
  "meowhash",

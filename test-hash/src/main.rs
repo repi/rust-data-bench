@@ -122,6 +122,30 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         ( "siphasher", "SipHash-1-3-128", Box::new(|b| std_hasher(siphasher::sip128::SipHasher13::new(), b)) ),
         ( "siphasher", "SipHash-2-4-128", Box::new(|b| std_hasher(siphasher::sip128::SipHasher24::new(), b)) ),
 
+        // highway
+        ( "highway", "HighwayHash", Box::new(|b| {
+            use highway::HighwayHash;
+            u64_to_vec(highway::HighwayHasher::default().hash64(b))
+        })),
+        ( "highway", "HighwayHash-128", Box::new(|b| {
+            use highway::HighwayHash;
+            let h = highway::HighwayHasher::default().hash128(b);
+            let mut hash = vec![];
+            hash.extend(&h[0].to_le_bytes());
+            hash.extend(&h[1].to_le_bytes());
+            hash
+        })),
+        ( "highway", "HighwayHash-256", Box::new(|b| {
+            use highway::HighwayHash;
+            let h = highway::HighwayHasher::default().hash256(b);
+            let mut hash = vec![];
+            hash.extend(&h[0].to_le_bytes());
+            hash.extend(&h[1].to_le_bytes());
+            hash.extend(&h[2].to_le_bytes());
+            hash.extend(&h[3].to_le_bytes());
+            hash
+        })),
+
         // blake2
         ( "blake2b", "BLAKE2b", Box::new(|b| blake2::Blake2b::digest(&b).to_vec()) ),
         ( "blake2s", "BLAKE2s", Box::new(|b| blake2::Blake2s::digest(&b).to_vec()) ),
