@@ -163,9 +163,9 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
 
         // multihash
 
-        ( "multihash", "SHA1",       Box::new(|b| multihash::Sha1::digest(&b).to_vec()) ),
-        ( "multihash", "SHA2-256",   Box::new(|b| multihash::Sha2_256::digest(&b).to_vec()) ),
-        ( "multihash", "SHA2-512",   Box::new(|b| multihash::Sha2_512::digest(&b).to_vec()) ),
+        ( "multihash", "SHA-1",       Box::new(|b| multihash::Sha1::digest(&b).to_vec()) ),
+        ( "multihash", "SHA-256",     Box::new(|b| multihash::Sha2_256::digest(&b).to_vec()) ),
+        ( "multihash", "SHA-512",     Box::new(|b| multihash::Sha2_512::digest(&b).to_vec()) ),
         ( "multihash", "SHA3-256",   Box::new(|b| multihash::Sha3_256::digest(&b).to_vec()) ),
         ( "multihash", "SHA3-512",   Box::new(|b| multihash::Sha3_512::digest(&b).to_vec()) ),       
         ( "multihash", "Keccak-256", Box::new(|b| multihash::Keccak256::digest(&b).to_vec()) ),       
@@ -187,15 +187,15 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         // ring
 
         #[cfg(not(target_arch = "wasm32"))]
-        ( "ring", "SHA1", Box::new(|b| ring::digest::digest(&ring::digest::SHA1_FOR_LEGACY_USE_ONLY, b).as_ref().to_vec()) ),
+        ( "ring", "SHA-1", Box::new(|b| ring::digest::digest(&ring::digest::SHA1_FOR_LEGACY_USE_ONLY, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "ring", "SHA256", Box::new(|b| ring::digest::digest(&ring::digest::SHA256, b).as_ref().to_vec()) ),
+        ( "ring", "SHA-256", Box::new(|b| ring::digest::digest(&ring::digest::SHA256, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "ring", "SHA384", Box::new(|b| ring::digest::digest(&ring::digest::SHA384, b).as_ref().to_vec()) ),
+        ( "ring", "SHA-384", Box::new(|b| ring::digest::digest(&ring::digest::SHA384, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "ring", "SHA512", Box::new(|b| ring::digest::digest(&ring::digest::SHA512, b).as_ref().to_vec()) ),
+        ( "ring", "SHA-512", Box::new(|b| ring::digest::digest(&ring::digest::SHA512, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
-        ( "ring", "SHA512-256", Box::new(|b| ring::digest::digest(&ring::digest::SHA512_256, b).as_ref().to_vec()) ),
+        ( "ring", "SHA-512-256", Box::new(|b| ring::digest::digest(&ring::digest::SHA512_256, b).as_ref().to_vec()) ),
 
 
         // sthash
