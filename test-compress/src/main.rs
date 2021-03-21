@@ -60,6 +60,25 @@ fn codecs() -> Vec<Codec> {
         },
     ]);
 
+    v.extend(vec![Codec {
+        source: "miniz_oxide",
+        name: "zlib-1",
+        compress_fn: Box::new(|b| miniz_oxide::deflate::compress_to_vec_zlib(b, 1)),
+        decompress_fn: Box::new(|b| miniz_oxide::inflate::decompress_to_vec_zlib(b).unwrap()),
+    }]);
+    v.extend(vec![Codec {
+        source: "miniz_oxide",
+        name: "zlib-6",
+        compress_fn: Box::new(|b| miniz_oxide::deflate::compress_to_vec_zlib(b, 9)),
+        decompress_fn: Box::new(|b| miniz_oxide::inflate::decompress_to_vec_zlib(b).unwrap()),
+    }]);
+    v.extend(vec![Codec {
+        source: "miniz_oxide",
+        name: "zlib-9",
+        compress_fn: Box::new(|b| miniz_oxide::deflate::compress_to_vec_zlib(b, 9)),
+        decompress_fn: Box::new(|b| miniz_oxide::inflate::decompress_to_vec_zlib(b).unwrap()),
+    }]);
+
     #[cfg(all(feature = "non_rust", target_arch = "x86_64"))]
     v.extend(vec![
         Codec {
@@ -68,6 +87,18 @@ fn codecs() -> Vec<Codec> {
             compress_fn: Box::new(|b| {
                 let mut deflate =
                     cloudflare_zlib::Deflate::new(1, cloudflare_zlib::Z_DEFAULT_STRATEGY, 15)
+                        .unwrap();
+                deflate.compress(b).unwrap();
+                deflate.finish().unwrap()
+            }),
+            decompress_fn: Box::new(|b| cloudflare_zlib::inflate(b).unwrap()),
+        },
+        Codec {
+            source: "cloudflare-zlib",
+            name: "zlib-6",
+            compress_fn: Box::new(|b| {
+                let mut deflate =
+                    cloudflare_zlib::Deflate::new(6, cloudflare_zlib::Z_DEFAULT_STRATEGY, 15)
                         .unwrap();
                 deflate.compress(b).unwrap();
                 deflate.finish().unwrap()
@@ -208,8 +239,8 @@ fn main() {
         for r in results {
             println!(
                 "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x  {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x",
-                r.codec.source,
                 r.codec.name,
+                r.codec.source,
                 (data_bytes.len() as f32 / r.compress_size as f32),
                 (data_bytes.len() as f64)
                     / (1024f64 * 1024f64)

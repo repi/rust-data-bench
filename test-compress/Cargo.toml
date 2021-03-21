@@ -12,6 +12,7 @@ lz4_flex = { version = "0.7.5", default-features = false }
 lz4-compression = "0.7.0"
 snap = "1.0.1"
 smush = { version = "0.1.5", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
+miniz_oxide = "0.4"
 
 # non-native 
 cloudflare-zlib = { version = "0.2.5", optional = true }
