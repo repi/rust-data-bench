@@ -91,9 +91,10 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         ( "md5", "MD5", Box::new(|b| md5::compute(b).to_vec() ) ),
 
         // sha2
-        ( "sha2", "SHA2-256", Box::new(|b| sha2::Sha256::digest(&b).to_vec()) ),
-        ( "sha2", "SHA2-512", Box::new(|b| sha2::Sha512::digest(&b).to_vec()) ),
-        ( "sha2", "SHA2-512-256", Box::new(|b| sha2::Sha512Trunc256::digest(&b).to_vec()) ),
+        ( "sha2", "SHA-256", Box::new(|b| sha2::Sha256::digest(&b).to_vec()) ),
+        ( "sha2", "SHA-384", Box::new(|b| sha2::Sha384::digest(&b).to_vec()) ),
+        ( "sha2", "SHA-512", Box::new(|b| sha2::Sha512::digest(&b).to_vec()) ),
+        ( "sha2", "SHA-512-256", Box::new(|b| sha2::Sha512Trunc256::digest(&b).to_vec()) ),
         
         // sha3
         ( "sha3", "SHA3-256", Box::new(|b| sha3::Sha3_256::digest(&b).to_vec()) ),
