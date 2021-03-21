@@ -152,6 +152,7 @@ fn codecs() -> Vec<Codec> {
         ("zstd-0", 0),
         ("zstd-1", 1),
         ("zstd-11", 11),
+        ("zstd-20", 20),
     ] {
         v.push(Codec {
             source: "zstd",
@@ -239,8 +240,8 @@ fn main() {
         for r in results {
             println!(
                 "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x  {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x",
-                r.codec.name,
                 r.codec.source,
+                r.codec.name,
                 (data_bytes.len() as f32 / r.compress_size as f32),
                 (data_bytes.len() as f64)
                     / (1024f64 * 1024f64)
