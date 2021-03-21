@@ -38,6 +38,11 @@ fn tiny_keccak_hash(mut hasher: impl tiny_keccak::Hasher, bytes: &[u8]) -> Vec<u
     output.to_vec()
 }
 
+fn std_hasher(mut hasher: impl std::hash::Hasher, bytes: &[u8]) -> Vec<u8> {
+    hasher.write(bytes);
+    u64_to_vec(hasher.finish())
+}
+
 #[rustfmt::skip]
 #[allow(clippy::type_complexity)]
 fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + Send + Sync>)> {
@@ -110,6 +115,12 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         ( "sha3", "Keccak256", Box::new(|b| sha3::Keccak256::digest(&b).to_vec()) ),
         ( "sha3", "Keccak384", Box::new(|b| sha3::Keccak384::digest(&b).to_vec()) ),
         ( "sha3", "Keccak512", Box::new(|b| sha3::Keccak512::digest(&b).to_vec()) ),
+
+        // siphasher
+        ( "siphasher", "SipHash-1-3", Box::new(|b| std_hasher(siphasher::sip::SipHasher13::new(), b)) ),
+        ( "siphasher", "SipHash-2-4", Box::new(|b| std_hasher(siphasher::sip::SipHasher24::new(), b)) ),
+        ( "siphasher", "SipHash-1-3-128", Box::new(|b| std_hasher(siphasher::sip128::SipHasher13::new(), b)) ),
+        ( "siphasher", "SipHash-2-4-128", Box::new(|b| std_hasher(siphasher::sip128::SipHasher24::new(), b)) ),
 
         // blake2
         ( "blake2b", "BLAKE2b", Box::new(|b| blake2::Blake2b::digest(&b).to_vec()) ),
@@ -312,7 +323,7 @@ fn perf_test(options: Options) {
         match options.format {
             Format::Text => {
                 print!(
-                    "{:14} {:13} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
+                    "{:15} {:13} {:>6.0} MB/s {:>6.0} MB/s {:>5.1}x",
                     hash_name,
                     impl_name,
                     st_speed,
