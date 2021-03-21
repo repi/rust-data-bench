@@ -187,6 +187,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         #[cfg(not(target_arch = "wasm32"))]
         ( "ring", "SHA256", Box::new(|b| ring::digest::digest(&ring::digest::SHA256, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
+        ( "ring", "SHA384", Box::new(|b| ring::digest::digest(&ring::digest::SHA384, b).as_ref().to_vec()) ),
+        #[cfg(not(target_arch = "wasm32"))]
         ( "ring", "SHA512", Box::new(|b| ring::digest::digest(&ring::digest::SHA512, b).as_ref().to_vec()) ),
         #[cfg(not(target_arch = "wasm32"))]
         ( "ring", "SHA512-256", Box::new(|b| ring::digest::digest(&ring::digest::SHA512_256, b).as_ref().to_vec()) ),
