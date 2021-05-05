@@ -19,7 +19,7 @@ md5-alt = { package = "md-5", version = "0.9.1" }
 multibase = "0.8.0"
 multihash = "0.11.2"
 seahash = "4.0.1"
-sha2 = "0.9.1"
+sha2 = { version = "0.9.1", features = ["asm"] }
 sha3 = "0.9.1"
 t1ha = "0.1.0"
 twox-hash = "1.5.0"
