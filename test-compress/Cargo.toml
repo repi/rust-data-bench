@@ -8,7 +8,7 @@ edition = "2018"
 [dependencies]
 rayon = "1.0"
 num_cpus = "1.0"
-lz4_flex = { version = "0.7.5", default-features = false }
+lz4_flex = { version = "0.8.2", default-features = false }
 lz4-compression = "0.7.0"
 snap = "1.0.1"
 smush = { version = "0.1.5", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
