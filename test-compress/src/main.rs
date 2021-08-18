@@ -15,6 +15,8 @@ fn smush_codecs() -> Vec<Codec> {
     [
         ("zstd-0", smush::Codec::Zstd, smush::Quality::Default),
         ("zstd-1", smush::Codec::Zstd, smush::Quality::Level1),
+        ("zstd-2", smush::Codec::Zstd, smush::Quality::Level2),
+        ("zstd-3", smush::Codec::Zstd, smush::Quality::Level3),
         ("zstd-11", smush::Codec::Zstd, smush::Quality::Maximum),
         ("gzip", smush::Codec::Gzip, smush::Quality::Default),
         ("deflate", smush::Codec::Deflate, smush::Quality::Default),
@@ -153,6 +155,8 @@ fn codecs() -> Vec<Codec> {
         //("zstd-def", zstd::DEFAULT_COMPRESSION_LEVEL),
         ("zstd-0", 0),
         ("zstd-1", 1),
+        ("zstd-2", 2),
+        ("zstd-3", 3),
         ("zstd-11", 11),
         ("zstd-20", 20),
     ] {
