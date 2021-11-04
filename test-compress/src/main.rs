@@ -207,7 +207,7 @@ fn main() {
                 // singlethreaded test
 
                 let start_time = Instant::now();
-                let compress_bytes = (codec.compress_fn)(&data_bytes);
+                let compress_bytes = (codec.compress_fn)(data_bytes);
                 let st_compress_duration = start_time.elapsed();
 
                 let start_time2 = Instant::now();
@@ -220,7 +220,7 @@ fn main() {
 
                 let start_time = Instant::now();
                 (0..threads).into_par_iter().for_each(|_i| {
-                    let _ = (codec.compress_fn)(&data_bytes);
+                    let _ = (codec.compress_fn)(data_bytes);
                 });
                 let mt_compress_duration = start_time.elapsed() / threads as u32;
 

@@ -52,7 +52,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
             "twox-hash", "XXH-32", 
             Box::new(|b| {
                 let mut hasher = twox_hash::XxHash32::with_seed(0);
-                hasher.write(&b);
+                hasher.write(b);
                 u32_to_vec(hasher.finish() as u32)
             }),
         ),
@@ -60,7 +60,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
             "twox-hash", "XXH-64", 
             Box::new(|b| {
                 let mut hasher = twox_hash::XxHash64::with_seed(0);
-                hasher.write(&b);
+                hasher.write(b);
                 u64_to_vec(hasher.finish())
             }),
         ),
@@ -81,7 +81,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         (
             "meowhash", "MeowHash",
             Box::new(|b| {
-                meowhash::MeowHasher::hash(&b).into_bytes().to_vec()
+                meowhash::MeowHasher::hash(b).into_bytes().to_vec()
             }),
         ),
         
@@ -89,8 +89,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         ( "seahash", "SeaHash", Box::new(|b| u64_to_vec(seahash::hash(b))) ),
         
         // t1ha
-        ( "t1ha", "t1ha0", Box::new(|b| u64_to_vec(t1ha::t1ha0(&b, 1))) ),
-        ( "t1ha", "t1ha1", Box::new(|b| u64_to_vec(t1ha::t1ha1(&b, 1))) ),
+        ( "t1ha", "t1ha0", Box::new(|b| u64_to_vec(t1ha::t1ha0(b, 1))) ),
+        ( "t1ha", "t1ha1", Box::new(|b| u64_to_vec(t1ha::t1ha1(b, 1))) ),
 
         // md5
         ( "md5", "MD5", Box::new(|b| md5::compute(b).to_vec() ) ),
@@ -103,18 +103,18 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         }) ),
 
         // sha2
-        ( "sha2", "SHA-256", Box::new(|b| sha2::Sha256::digest(&b).to_vec()) ),
-        ( "sha2", "SHA-384", Box::new(|b| sha2::Sha384::digest(&b).to_vec()) ),
-        ( "sha2", "SHA-512", Box::new(|b| sha2::Sha512::digest(&b).to_vec()) ),
-        ( "sha2", "SHA-512-256", Box::new(|b| sha2::Sha512Trunc256::digest(&b).to_vec()) ),
+        ( "sha2", "SHA-256", Box::new(|b| sha2::Sha256::digest(b).to_vec()) ),
+        ( "sha2", "SHA-384", Box::new(|b| sha2::Sha384::digest(b).to_vec()) ),
+        ( "sha2", "SHA-512", Box::new(|b| sha2::Sha512::digest(b).to_vec()) ),
+        ( "sha2", "SHA-512-256", Box::new(|b| sha2::Sha512Trunc256::digest(b).to_vec()) ),
         
         // sha3
-        ( "sha3", "SHA3-256", Box::new(|b| sha3::Sha3_256::digest(&b).to_vec()) ),
-        ( "sha3", "SHA3-384", Box::new(|b| sha3::Sha3_384::digest(&b).to_vec()) ),
-        ( "sha3", "SHA3-512", Box::new(|b| sha3::Sha3_512::digest(&b).to_vec()) ),
-        ( "sha3", "Keccak256", Box::new(|b| sha3::Keccak256::digest(&b).to_vec()) ),
-        ( "sha3", "Keccak384", Box::new(|b| sha3::Keccak384::digest(&b).to_vec()) ),
-        ( "sha3", "Keccak512", Box::new(|b| sha3::Keccak512::digest(&b).to_vec()) ),
+        ( "sha3", "SHA3-256", Box::new(|b| sha3::Sha3_256::digest(b).to_vec()) ),
+        ( "sha3", "SHA3-384", Box::new(|b| sha3::Sha3_384::digest(b).to_vec()) ),
+        ( "sha3", "SHA3-512", Box::new(|b| sha3::Sha3_512::digest(b).to_vec()) ),
+        ( "sha3", "Keccak256", Box::new(|b| sha3::Keccak256::digest(b).to_vec()) ),
+        ( "sha3", "Keccak384", Box::new(|b| sha3::Keccak384::digest(b).to_vec()) ),
+        ( "sha3", "Keccak512", Box::new(|b| sha3::Keccak512::digest(b).to_vec()) ),
 
         // siphasher
         ( "siphasher", "SipHash-1-3", Box::new(|b| std_hasher(siphasher::sip::SipHasher13::new(), b)) ),
@@ -147,8 +147,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         })),
 
         // blake2
-        ( "blake2b", "BLAKE2b", Box::new(|b| blake2::Blake2b::digest(&b).to_vec()) ),
-        ( "blake2s", "BLAKE2s", Box::new(|b| blake2::Blake2s::digest(&b).to_vec()) ),
+        ( "blake2b", "BLAKE2b", Box::new(|b| blake2::Blake2b::digest(b).to_vec()) ),
+        ( "blake2s", "BLAKE2s", Box::new(|b| blake2::Blake2s::digest(b).to_vec()) ),
         ( 
             "blake2b", "BLAKE2b-256", 
             Box::new(|b| {
@@ -164,33 +164,33 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
 
         // blake2b-simd
         
-        ( "blake2b-simd", "BLAKE2b", Box::new(|b| blake2b_simd::blake2b(&b).as_bytes().to_vec()) ),
+        ( "blake2b-simd", "BLAKE2b", Box::new(|b| blake2b_simd::blake2b(b).as_bytes().to_vec()) ),
         ( 
             "blake2b-simd", "BLAKE2b-256", 
             Box::new(|b| {
                 let mut params = blake2b_simd::Params::new();
                 params.hash_length(32);
-                params.hash(&b).as_bytes().to_vec()
+                params.hash(b).as_bytes().to_vec()
             })
         ),
-        ( "blake2b-simd", "BLAKE2bp", Box::new(|b| blake2b_simd::blake2bp::blake2bp(&b).as_bytes().to_vec()) ),
+        ( "blake2b-simd", "BLAKE2bp", Box::new(|b| blake2b_simd::blake2bp::blake2bp(b).as_bytes().to_vec()) ),
         ( 
             "blake2b-simd", "BLAKE2bp-256", 
             Box::new(|b| {
                 let mut params = blake2b_simd::blake2bp::Params::new();
                 params.hash_length(32);
-                params.hash(&b).as_bytes().to_vec()
+                params.hash(b).as_bytes().to_vec()
             })
         ),
 
         // blake2s-simd
 
-        ( "blake2s-simd", "BLAKE2s",  Box::new(|b| blake2s_simd::blake2s(&b).as_bytes().to_vec()) ),
-        ( "blake2s-simd", "BLAKE2sp", Box::new(|b| blake2s_simd::blake2sp::blake2sp(&b).as_bytes().to_vec()) ),
+        ( "blake2s-simd", "BLAKE2s",  Box::new(|b| blake2s_simd::blake2s(b).as_bytes().to_vec()) ),
+        ( "blake2s-simd", "BLAKE2sp", Box::new(|b| blake2s_simd::blake2sp::blake2sp(b).as_bytes().to_vec()) ),
 
         // blake3
 
-        ( "blake3", "BLAKE3",  Box::new(|b| blake3::hash(&b).as_bytes().to_vec()) ),
+        ( "blake3", "BLAKE3",  Box::new(|b| blake3::hash(b).as_bytes().to_vec()) ),
         ( 
             "blake3-rayon", "BLAKE3",  
             Box::new(|b| {
@@ -205,15 +205,15 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
 
         // multihash
 
-        ( "multihash", "SHA-1",       Box::new(|b| multihash::Sha1::digest(&b).to_vec()) ),
-        ( "multihash", "SHA-256",     Box::new(|b| multihash::Sha2_256::digest(&b).to_vec()) ),
-        ( "multihash", "SHA-512",     Box::new(|b| multihash::Sha2_512::digest(&b).to_vec()) ),
-        ( "multihash", "SHA3-256",   Box::new(|b| multihash::Sha3_256::digest(&b).to_vec()) ),
-        ( "multihash", "SHA3-512",   Box::new(|b| multihash::Sha3_512::digest(&b).to_vec()) ),       
-        ( "multihash", "Keccak-256", Box::new(|b| multihash::Keccak256::digest(&b).to_vec()) ),       
-        ( "multihash", "Keccak-512", Box::new(|b| multihash::Keccak512::digest(&b).to_vec()) ),       
-        ( "multihash", "BLAKE2b",    Box::new(|b| multihash::Blake2b512::digest(&b).to_vec()) ),       
-        ( "multihash", "BLAKE2s",    Box::new(|b| multihash::Blake2s256::digest(&b).to_vec()) ),       
+        ( "multihash", "SHA-1",       Box::new(|b| multihash::Sha1::digest(b).to_vec()) ),
+        ( "multihash", "SHA-256",     Box::new(|b| multihash::Sha2_256::digest(b).to_vec()) ),
+        ( "multihash", "SHA-512",     Box::new(|b| multihash::Sha2_512::digest(b).to_vec()) ),
+        ( "multihash", "SHA3-256",   Box::new(|b| multihash::Sha3_256::digest(b).to_vec()) ),
+        ( "multihash", "SHA3-512",   Box::new(|b| multihash::Sha3_512::digest(b).to_vec()) ),       
+        ( "multihash", "Keccak-256", Box::new(|b| multihash::Keccak256::digest(b).to_vec()) ),       
+        ( "multihash", "Keccak-512", Box::new(|b| multihash::Keccak512::digest(b).to_vec()) ),       
+        ( "multihash", "BLAKE2b",    Box::new(|b| multihash::Blake2b512::digest(b).to_vec()) ),       
+        ( "multihash", "BLAKE2s",    Box::new(|b| multihash::Blake2s256::digest(b).to_vec()) ),       
 
         // tiny-keccak
         ( "tiny-keccak", "Keccak-224", Box::new(|b| tiny_keccak_hash(tiny_keccak::Keccak::v224(), b) ) ),
