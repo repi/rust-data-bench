@@ -195,7 +195,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
             "blake3-rayon", "BLAKE3",  
             Box::new(|b| {
                 let mut hasher = blake3::Hasher::new();
-                hasher.update_with_join::<blake3::join::RayonJoin>(b);
+                hasher.update_rayon(b);
                 blake3::Hasher::finalize(&hasher).as_bytes().to_vec()
             })
         ),
