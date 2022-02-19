@@ -8,16 +8,16 @@ edition = "2018"
 [dependencies]
 rayon = "1.0"
 num_cpus = "1.0"
-lz4_flex = { version = "0.8.2", default-features = false }
+lz4_flex = { version = "0.9.2", default-features = false }
 lz4-compression = "0.7.0"
 snap = "1.0.1"
 smush = { version = "0.1.5", default-features = false, features = ["gzip_support", "deflate_support", "zlib_support", "brotli_support"] }
-miniz_oxide = "0.4"
+miniz_oxide = "0.5.1"
 
 # non-native 
 cloudflare-zlib = { version = "0.2.5", optional = true }
 bzip2 = { version = "0.4.1", optional = true }
-zstd = { version = "0.9.0", optional = true }
+zstd = { version = "0.10.0", optional = true }
 
 [features]
 default = []
