@@ -193,11 +193,21 @@ struct CodecTestOutput {
 
     st_compress_duration: Duration,
     st_decompress_duration: Duration,
-    mt_compress_duration: Duration,
-    mt_decompress_duration: Duration,
+    mt_compress_duration: Option<Duration>,
+    mt_decompress_duration: Option<Duration>,
+}
+
+#[derive(argh::FromArgs)]
+/// Test performance of compression and decompression routines
+struct Options {
+    /// run parallel compression/decompression tests
+    #[argh(switch, short = 'p')]
+    parallel: bool,
 }
 
 fn main() {
+    let options: Options = argh::from_env();
+
     let datas = vec![
         ("bincode", include_bytes!("../data/bincode").to_vec()),
         ("json", include_bytes!("../data/json").to_vec()),
@@ -232,19 +242,23 @@ fn main() {
 
                 assert_eq!(data_bytes, &decompress_bytes);
 
-                // multithreaded test
+                let (mt_compress_duration, mt_decompress_duration) = if options.parallel {
+                    // multithreaded test
+                    let start_time = Instant::now();
+                    (0..threads).into_par_iter().for_each(|_i| {
+                        let _ = (codec.compress_fn)(data_bytes);
+                    });
+                    let mt_compress_duration = start_time.elapsed() / threads as u32;
 
-                let start_time = Instant::now();
-                (0..threads).into_par_iter().for_each(|_i| {
-                    let _ = (codec.compress_fn)(data_bytes);
-                });
-                let mt_compress_duration = start_time.elapsed() / threads as u32;
-
-                let start_time = Instant::now();
-                (0..threads).into_par_iter().for_each(|_i| {
-                    let _ = (codec.decompress_fn)(&compress_bytes);
-                });
-                let mt_decompress_duration = start_time.elapsed() / threads as u32;
+                    let start_time = Instant::now();
+                    (0..threads).into_par_iter().for_each(|_i| {
+                        let _ = (codec.decompress_fn)(&compress_bytes);
+                    });
+                    let mt_decompress_duration = start_time.elapsed() / threads as u32;
+                    (Some(mt_compress_duration), Some(mt_decompress_duration))
+                } else {
+                    (None, None)
+                };
 
                 CodecTestOutput {
                     codec,
@@ -260,26 +274,35 @@ fn main() {
         results.sort_by_key(|r| r.compress_size);
 
         for r in results {
-            println!(
-                "{:20} {:12} {:.2}x {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x  {:>5.0} MB/s {:>5.0} MB/s, {:>4.1}x",
-                r.codec.source,
-                r.codec.name,
-                (data_bytes.len() as f32 / r.compress_size as f32),
-                (data_bytes.len() as f64)
+            let source = r.codec.source;
+            let name = r.codec.name;
+            let compression_ratio = data_bytes.len() as f32 / r.compress_size as f32;
+            let st_compress_speed = (data_bytes.len() as f64)
+                / (1024f64 * 1024f64)
+                / r.st_compress_duration.as_secs_f64();
+            let st_decompress_speed = (data_bytes.len() as f64)
+                / (1024f64 * 1024f64)
+                / r.st_decompress_duration.as_secs_f64();
+
+            if let (Some(mt_compress_duration), Some(mt_decompress_duration)) =
+                (r.mt_compress_duration, r.mt_decompress_duration)
+            {
+                let mt_compress_speed = (data_bytes.len() as f64)
                     / (1024f64 * 1024f64)
-                    / r.st_compress_duration.as_secs_f64(),
-                (data_bytes.len() as f64)
+                    / mt_compress_duration.as_secs_f64();
+                let mt_compress_ratio =
+                    r.st_compress_duration.as_secs_f64() / mt_compress_duration.as_secs_f64();
+
+                let mt_decompress_speed = (data_bytes.len() as f64)
                     / (1024f64 * 1024f64)
-                    / r.mt_compress_duration.as_secs_f64(),
-                    r.st_compress_duration.as_secs_f64() / r.mt_compress_duration.as_secs_f64(),
-                (data_bytes.len() as f64)
-                    / (1024f64 * 1024f64)
-                    / r.st_decompress_duration.as_secs_f64(),
-                (data_bytes.len() as f64)
-                    / (1024f64 * 1024f64)
-                    / r.mt_decompress_duration.as_secs_f64(),
-                    r.st_decompress_duration.as_secs_f64() / r.mt_decompress_duration.as_secs_f64(),
-            );
+                    / mt_decompress_duration.as_secs_f64();
+                let mt_decompress_ratio =
+                    r.st_decompress_duration.as_secs_f64() / mt_decompress_duration.as_secs_f64();
+
+                println!("{source:20} {name:12} {compression_ratio:.2}x {st_compress_speed:>5.0} MB/s {mt_compress_speed:>5.0} MB/s, {mt_compress_ratio:>4.1}x  {st_decompress_speed:>5.0} MB/s {mt_decompress_speed:>5.0} MB/s, {mt_decompress_ratio:>4.1}x");
+            } else {
+                println!("{source:20} {name:12} {compression_ratio:.2}x {st_compress_speed:>5.0} MB/s {st_decompress_speed:>5.0} MB/s");
+            }
         }
     }
 }
