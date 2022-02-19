@@ -1,8 +1,10 @@
 #![allow(unused_imports)]
 
 use rayon::prelude::*;
-use std::io::{Cursor, Read};
-use std::time::{Duration, Instant};
+use std::{
+    io::{Cursor, Read},
+    time::{Duration, Instant},
+};
 
 struct Codec {
     pub source: &'static str,
@@ -165,6 +167,20 @@ fn codecs() -> Vec<Codec> {
             name,
             compress_fn: Box::new(move |b| zstd::encode_all(Cursor::new(b), level).unwrap()),
             decompress_fn: Box::new(|b| zstd::decode_all(Cursor::new(b)).unwrap()),
+        });
+
+        v.push(Codec {
+            source: "ruzstd",
+            name,
+            // this codec is only a decompressor, so use ordinary zstd for compression
+            compress_fn: Box::new(move |b| zstd::encode_all(Cursor::new(b), level).unwrap()),
+            decompress_fn: Box::new(|b| {
+                let mut input = Cursor::new(b);
+                let mut decoder = ruzstd::StreamingDecoder::new(&mut input).unwrap();
+                let mut out = vec![];
+                decoder.read_to_end(&mut out).unwrap();
+                out
+            }),
         });
     }
 

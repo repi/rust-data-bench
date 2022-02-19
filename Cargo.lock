@@ -827,6 +827,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ruzstd"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8cada0ef59efa6a5f4dc5e491f93d9f31e3fc7758df421ff1de8a706338e1100"
+dependencies = [
+ "byteorder",
+ "twox-hash",
+]
+
+[[package]]
 name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1007,6 +1017,7 @@ dependencies = [
  "miniz_oxide 0.5.1",
  "num_cpus",
  "rayon",
+ "ruzstd",
  "smush",
  "snap",
  "zstd",
