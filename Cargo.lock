@@ -857,11 +857,12 @@ dependencies = [
 
 [[package]]
 name = "ruzstd"
-version = "0.2.4"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8cada0ef59efa6a5f4dc5e491f93d9f31e3fc7758df421ff1de8a706338e1100"
+checksum = "ffae8df4aa221781b715c27bbed0fac16b6f1e2643efb7af8a24dfc78d444493"
 dependencies = [
  "byteorder",
+ "thiserror",
  "twox-hash",
 ]
 
@@ -1091,6 +1092,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.32"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f5f6586b7f764adc0231f4c79be7b920e766bb2f3e51b3661cdb263828f19994"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.32"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12bafc5b54507e0149cdf1b145a5d80ab80a90bcd9275df43d4fff68460f6c21"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
