@@ -311,7 +311,6 @@ fn perf_test(options: Options) {
     });
 
     let threads = options.threads.unwrap_or_else(num_cpus::get);
-    println!("threads: {}", threads);
     rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build_global()
