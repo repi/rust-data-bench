@@ -215,7 +215,6 @@ fn main() {
     ];
 
     let threads = num_cpus::get();
-    println!("threads: {}", threads);
     rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build_global()
