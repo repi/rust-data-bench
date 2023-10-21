@@ -319,7 +319,7 @@ fn perf_test(options: Options) {
     let bytes = vec![0u8; options.size * 1024 * 1024];
 
     if options.format == Format::Csv {
-        println!("implementation,hash,MB/s");
+        println!("implementation,hash,MB/s,MT MB/s,MT ratio");
     }
 
     for (impl_name, hash_name, hash_func) in &hashes {
