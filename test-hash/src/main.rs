@@ -98,7 +98,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
         // md-5
         ( "md-5", "MD5", Box::new(|b| {
             let mut hasher = md5_alt::Md5::new();
-            hasher.update(&b);
+            hasher.update(b);
             hasher.finalize().to_vec()
         }) ),
 
@@ -154,7 +154,7 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
             Box::new(|b| {
                 use blake2::digest::{VariableOutputDirty, Update};
                 let mut hasher = blake2::VarBlake2b::new(32).unwrap();
-                hasher.update(&b);
+                hasher.update(b);
                 let mut t = vec![];
                 hasher.finalize_variable_dirty(|res| t = res.to_vec());
                 t                
@@ -200,8 +200,8 @@ fn hashes() -> Vec<(&'static str, &'static str, Box<dyn Fn(&[u8]) -> Vec<u8> + S
             })
         ),
 
-        ( "bao", "bao-combined",  Box::new(|b| bao::encode::encode(&b).1.as_bytes().to_vec()) ),
-        ( "bao", "bao-outboard",  Box::new(|b| bao::encode::outboard(&b).1.as_bytes().to_vec()) ),
+        ( "bao", "bao-combined",  Box::new(|b| bao::encode::encode(b).1.as_bytes().to_vec()) ),
+        ( "bao", "bao-outboard",  Box::new(|b| bao::encode::outboard(b).1.as_bytes().to_vec()) ),
 
         // multihash
 
@@ -316,8 +316,7 @@ fn perf_test(options: Options) {
         .build_global()
         .unwrap();
 
-    let mut bytes = Vec::new();
-    bytes.resize(options.size * 1024 * 1024, 0u8);
+    let bytes = vec![0u8; options.size * 1024 * 1024];
 
     if options.format == Format::Csv {
         println!("implementation,hash,MB/s");
