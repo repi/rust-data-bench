@@ -1,6 +1,6 @@
-# Misc Rust and WASM tests
+# Rust and WASM tests of compression & hashing
 
-This is a small test repository for various Rust crates and specifically using them in WASM/WASI.
+This is a small test repository for various Rust crates and specifically using them in WASM/WASI vs native execution.
 
 - [test-compress](test-compress/README.md)
 - [test-hash](test-hash/README.md)
